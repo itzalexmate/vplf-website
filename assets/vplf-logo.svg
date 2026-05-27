@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-labelledby="title desc">
+  <title id="title">VPLF Logo</title>
+  <desc id="desc">A neon red and blue VPLF football league badge.</desc>
+  <defs>
+    <linearGradient id="outer" x1="18" y1="18" x2="142" y2="142" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#42b3ff"/>
+      <stop offset="0.48" stop-color="#ff3da5"/>
+      <stop offset="1" stop-color="#ff174f"/>
+    </linearGradient>
+    <linearGradient id="shield" x1="43" y1="29" x2="118" y2="139" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#263bff"/>
+      <stop offset="0.46" stop-color="#d40d6b"/>
+      <stop offset="1" stop-color="#ff2b3f"/>
+    </linearGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0.8 0 1 0 0 0.1 0 0 1 0 0.65 0 0 0 0.8 0"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="160" height="160" rx="80" fill="#05070e"/>
+  <circle cx="80" cy="80" r="70" fill="none" stroke="url(#outer)" stroke-width="8" filter="url(#glow)"/>
+  <circle cx="80" cy="80" r="58" fill="#0c1020" stroke="#ffffff" stroke-opacity="0.24" stroke-width="2"/>
+  <path d="M80 27 122 43v34c0 29-17 52-42 65-25-13-42-36-42-65V43l42-16Z" fill="url(#shield)" stroke="#ffffff" stroke-opacity="0.42" stroke-width="3"/>
+  <path d="M80 35v96M47 63h66M50 96h60" stroke="#ffffff" stroke-opacity="0.14" stroke-width="5"/>
+  <circle cx="80" cy="76" r="24" fill="#070a13" stroke="#ffffff" stroke-opacity="0.34" stroke-width="2"/>
+  <path d="m80 54 9 15-9 9-9-9 9-15Zm-22 17 14-2 8 9-5 13-17-20Zm44 0L85 91l-5-13 8-9 14 2ZM67 105l8-14h10l8 14H67Z" fill="#ffffff" opacity="0.9"/>
+  <text x="80" y="122" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="27" font-weight="700" fill="#ffffff" letter-spacing="0">VPLF</text>
+  <path d="M38 42c10-15 23-23 42-23s32 8 42 23" fill="none" stroke="#ff9bd1" stroke-width="4" stroke-linecap="round" opacity="0.78"/>
+  <path d="M34 118c12 15 27 23 46 23s34-8 46-23" fill="none" stroke="#42b3ff" stroke-width="4" stroke-linecap="round" opacity="0.74"/>
+</svg>

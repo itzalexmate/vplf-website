@@ -4,3 +4,7 @@ __pycache__/
 
 .vercel
 .env*
+!.env.example
+node_modules/
+.local-data/
+npm-debug.log*

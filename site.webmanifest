@@ -1,0 +1,14 @@
+{
+  "name": "VPLF Ticket System",
+  "short_name": "VPLF Tickets",
+  "icons": [
+    {
+      "src": "/assets/vplf-logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ],
+  "theme_color": "#050814",
+  "background_color": "#050814",
+  "display": "standalone"
+}

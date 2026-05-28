@@ -3,49 +3,137 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#050814">
+  <meta name="description" content="VPLF Discord OAuth ticket system for reward claims.">
   <title>VPLF Ticket System</title>
-  <link rel="icon" href="assets/vplf-logo.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="/assets/vplf-logo.svg" type="image/svg+xml">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <div class="arena-lights" aria-hidden="true">
-    <span></span>
-    <span></span>
-    <span></span>
+  <div class="background-stage" aria-hidden="true">
+    <span class="beam beam-a"></span>
+    <span class="beam beam-b"></span>
+    <span class="beam beam-c"></span>
+    <span class="corner-grid corner-grid-a"></span>
+    <span class="corner-grid corner-grid-b"></span>
   </div>
 
   <div class="page-shell">
     <header class="site-header">
-      <a class="brand" href="#" aria-label="VPLF Ticket System home" data-show-create>
-        <img src="assets/vplf-logo.svg" alt="VPLF Logo" class="brand-logo">
+      <a class="brand" href="#" aria-label="VPLF Ticket System home" data-view-link="onboarding">
+        <img src="/assets/vplf-logo.svg" alt="VPLF Logo" class="brand-logo">
         <span class="brand-copy">
           <strong>VPLF</strong>
           <span>Ticket System</span>
         </span>
       </a>
 
+      <nav class="desktop-nav" aria-label="Primary navigation">
+        <button class="nav-link active" type="button" data-view-link="onboarding">Onboarding</button>
+        <button class="nav-link" type="button" data-view-link="ticket">Create Ticket</button>
+        <button class="nav-link" type="button" data-view-link="mine">My Tickets</button>
+        <button class="nav-link staff-only" type="button" data-view-link="staff" hidden>League Console</button>
+      </nav>
+
       <div class="header-actions">
-        <span class="database-pill" id="databaseStatus">Connecting</span>
-        <button class="panel-button" type="button" data-open-panel>
-          <span class="button-icon" aria-hidden="true">DB</span>
-          League Panel
-        </button>
+        <span class="database-pill" id="systemStatus">Checking</span>
+        <a class="discord-login" id="loginButton" href="/api/auth/discord">
+          <span class="discord-mark" aria-hidden="true"></span>
+          Login
+        </a>
+
+        <div class="profile-menu" id="profileMenu" hidden>
+          <button class="profile-trigger" id="profileTrigger" type="button" aria-expanded="false" aria-controls="profileDropdown">
+            <img id="profileAvatar" src="/assets/vplf-logo.svg" alt="">
+            <span id="profileName">User</span>
+          </button>
+          <div class="profile-dropdown" id="profileDropdown" hidden>
+            <button type="button" data-view-link="mine">My Tickets</button>
+            <button class="staff-only" type="button" data-view-link="staff" hidden>League Console</button>
+            <button type="button" id="logoutButton">Logout</button>
+          </div>
+        </div>
       </div>
     </header>
 
     <main class="main-stage">
-      <nav class="mode-switch" aria-label="Ticket views">
-        <button class="mode-button active" type="button" data-show-create>Create Ticket</button>
-        <button class="mode-button" type="button" data-open-panel>League Panel</button>
-      </nav>
+      <section class="view active" data-view="onboarding" aria-labelledby="onboarding-title">
+        <div class="onboarding-layout">
+          <div class="hero-copy">
+            <div class="hero-logo-wrap">
+              <img src="/assets/vplf-logo.svg" alt="" class="hero-logo">
+            </div>
+            <p class="eyebrow">Discord Secured Claim Portal</p>
+            <h1 id="onboarding-title">VPLF Ticket System</h1>
+            <p class="hero-subtitle">Sign in with Discord, submit your item claim, and let verified league staff process it through the console.</p>
+            <div class="hero-actions">
+              <a class="primary-action" href="/api/auth/discord" data-auth-action>
+                <span class="discord-mark" aria-hidden="true"></span>
+                Continue With Discord
+              </a>
+              <button class="secondary-action" type="button" data-view-link="ticket">Create Ticket</button>
+            </div>
+          </div>
 
-      <section class="ticket-view active" data-view="create" aria-labelledby="create-title">
+          <aside class="glass-card command-card" aria-label="System overview">
+            <div class="card-scanline"></div>
+            <div class="command-topline">
+              <span class="live-dot"></span>
+              <strong>Claim Pipeline</strong>
+            </div>
+            <div class="pipeline">
+              <div class="pipeline-step active">
+                <span>01</span>
+                <strong>Discord OAuth</strong>
+                <small>Identity is verified before claim creation.</small>
+              </div>
+              <div class="pipeline-step">
+                <span>02</span>
+                <strong>Ticket Review</strong>
+                <small>Staff IDs unlock the league console.</small>
+              </div>
+              <div class="pipeline-step">
+                <span>03</span>
+                <strong>Reward Decision</strong>
+                <small>Approve or clear claims with audit data.</small>
+              </div>
+            </div>
+          </aside>
+        </div>
+
+        <div class="feature-grid" aria-label="Portal features">
+          <article class="feature-tile">
+            <span class="tile-icon shield-icon" aria-hidden="true"></span>
+            <h2>OAuth Locked</h2>
+            <p>No shared staff password. Access comes from approved Discord user IDs.</p>
+          </article>
+          <article class="feature-tile">
+            <span class="tile-icon ticket-icon" aria-hidden="true"></span>
+            <h2>Tracked Claims</h2>
+            <p>Every ticket stores a VPLF code, player info, links, item, and timestamp.</p>
+          </article>
+          <article class="feature-tile">
+            <span class="tile-icon pulse-icon" aria-hidden="true"></span>
+            <h2>Vercel Ready</h2>
+            <p>Serverless API routes, Postgres storage, favicon, and setup docs included.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="view" data-view="ticket" aria-labelledby="create-title">
         <form class="glass-card ticket-card" id="ticketForm">
           <div class="card-scanline" aria-hidden="true"></div>
-          <div class="card-symbol" aria-hidden="true">V</div>
+          <img src="/assets/vplf-logo.svg" alt="" class="card-logo">
           <p class="eyebrow">VPLF Claim Desk</p>
-          <h1 id="create-title">Create a Ticket</h1>
+          <h2 id="create-title">Create a Ticket</h2>
           <p class="subtitle">Submit your reward claim for league staff review.</p>
+
+          <div class="auth-gate" id="ticketAuthGate" hidden>
+            <strong>Discord login required</strong>
+            <span>Connect your Discord account before sending a claim.</span>
+            <a class="primary-action compact" href="/api/auth/discord">Login With Discord</a>
+          </div>
 
           <div class="claim-meter" aria-hidden="true">
             <span id="formMeter"></span>
@@ -53,10 +141,7 @@
 
           <div class="form-grid">
             <label class="field-group">
-              <span class="field-label">
-                <span class="field-icon members-icon" aria-hidden="true"></span>
-                USERNAME
-              </span>
+              <span class="field-label"><span class="field-icon members-icon" aria-hidden="true"></span> USERNAME</span>
               <input id="username" name="username" type="text" placeholder="Enter your username" autocomplete="username" required>
             </label>
 
@@ -106,15 +191,39 @@
         </form>
       </section>
 
-      <section class="ticket-view" data-view="admin" aria-labelledby="panel-title">
-        <div class="glass-card admin-card">
+      <section class="view" data-view="mine" aria-labelledby="mine-title">
+        <div class="glass-card list-card">
           <div class="card-scanline" aria-hidden="true"></div>
-          <div class="admin-heading">
+          <div class="section-heading">
             <div>
-              <p class="eyebrow">Staff Console</p>
-              <h2 id="panel-title">League Panel</h2>
+              <p class="eyebrow left">Player View</p>
+              <h2 id="mine-title">My Tickets</h2>
             </div>
-            <button class="ghost-button" type="button" id="logoutButton">Logout Admin</button>
+            <button class="ghost-button" type="button" id="refreshMine">Refresh</button>
+          </div>
+          <div class="auth-gate" id="mineAuthGate" hidden>
+            <strong>Login to view your claims</strong>
+            <span>Your tickets are tied to your Discord account.</span>
+            <a class="primary-action compact" href="/api/auth/discord">Login With Discord</a>
+          </div>
+          <div class="tickets-list" id="myTicketsList"></div>
+        </div>
+      </section>
+
+      <section class="view" data-view="staff" aria-labelledby="staff-title">
+        <div class="glass-card staff-card">
+          <div class="card-scanline" aria-hidden="true"></div>
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow left">Discord Staff Console</p>
+              <h2 id="staff-title">League Console</h2>
+            </div>
+            <button class="ghost-button" type="button" id="refreshTickets">Refresh</button>
+          </div>
+
+          <div class="staff-denied" id="staffDenied" hidden>
+            <strong>Staff access required</strong>
+            <span>Your Discord ID is not in `DISCORD_STAFF_IDS`.</span>
           </div>
 
           <div class="stats-grid" aria-label="Ticket counts">
@@ -132,22 +241,16 @@
             </article>
           </div>
 
-          <div class="admin-toolbar">
+          <div class="staff-toolbar">
             <label class="search-box">
               <span class="sr-only">Search tickets</span>
-              <input id="ticketSearch" type="search" placeholder="Search username, ID, item, code">
+              <input id="ticketSearch" type="search" placeholder="Search username, Discord, ID, item, code">
             </label>
-
-            <label class="filter-box">
-              <span class="sr-only">Filter tickets</span>
-              <select id="statusFilter">
-                <option value="all">All Tickets</option>
-                <option value="pending">Pending</option>
-                <option value="approved">Approved</option>
-              </select>
-            </label>
-
-            <button class="ghost-button" type="button" id="refreshTickets">Refresh</button>
+            <div class="segmented-control" role="group" aria-label="Ticket status filter">
+              <button class="active" type="button" data-status-filter="all">All</button>
+              <button type="button" data-status-filter="pending">Pending</button>
+              <button type="button" data-status-filter="approved">Approved</button>
+            </div>
             <button class="ghost-button" type="button" id="exportTickets">Export CSV</button>
           </div>
 
@@ -159,23 +262,6 @@
     <footer class="site-footer">
       <span>Virtual Premier League Football</span>
     </footer>
-  </div>
-
-  <div class="modal-backdrop" id="loginModal" hidden>
-    <form class="login-panel" id="loginForm">
-      <button class="close-button" type="button" id="closeLogin" aria-label="Close login">x</button>
-      <div class="card-symbol small" aria-hidden="true">V</div>
-      <h2>Admin Access</h2>
-      <label class="field-group">
-        <span class="field-label">PASSWORD</span>
-        <input class="sr-only" type="text" name="adminUser" value="admin" autocomplete="username" tabindex="-1" aria-hidden="true">
-        <input id="adminPassword" name="adminPassword" type="password" placeholder="Enter panel password" autocomplete="current-password" required>
-      </label>
-      <button class="submit-button" type="submit" id="loginButton">
-        <span>Unlock Panel</span>
-      </button>
-      <p class="form-message" id="loginMessage" role="status" aria-live="polite"></p>
-    </form>
   </div>
 
   <template id="ticketTemplate">
@@ -190,6 +276,10 @@
         </div>
         <dl class="ticket-details">
           <div>
+            <dt>Discord</dt>
+            <dd data-ticket-discord></dd>
+          </div>
+          <div>
             <dt>Item</dt>
             <dd data-ticket-item></dd>
           </div>
@@ -198,11 +288,11 @@
             <dd data-ticket-id></dd>
           </div>
           <div>
-            <dt>Message Link</dt>
+            <dt>Message</dt>
             <dd><a data-ticket-message target="_blank" rel="noopener noreferrer">View Link</a></dd>
           </div>
           <div>
-            <dt>Server Link</dt>
+            <dt>Server</dt>
             <dd><a data-ticket-server target="_blank" rel="noopener noreferrer">View Link</a></dd>
           </div>
           <div>
@@ -215,14 +305,14 @@
           </div>
         </dl>
       </div>
-      <div class="ticket-actions">
-        <button class="copy-button" type="button" data-copy-ticket>Copy ID</button>
+      <div class="ticket-actions" data-ticket-actions>
+        <button class="copy-button" type="button" data-copy-ticket>Copy Code</button>
         <button class="approve-button" type="button" data-approve-ticket>Approve</button>
         <button class="deny-button" type="button" data-deny-ticket>Deny</button>
       </div>
     </article>
   </template>
 
-  <script src="script.js"></script>
+  <script src="/script.js" type="module"></script>
 </body>
 </html>

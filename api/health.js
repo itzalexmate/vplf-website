@@ -1,5 +1,6 @@
 import { getStorageMode, isStorageReady } from "../lib/storage.js";
 import { sendJson, methodNotAllowed } from "../lib/http.js";
+import { getNotificationHealth } from "../lib/notifications.js";
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {
@@ -14,6 +15,7 @@ export default async function handler(req, res) {
       && Boolean(process.env.DISCORD_CLIENT_SECRET)
       && Boolean(process.env.SESSION_SECRET),
     auth: "discord-oauth",
-    storage: getStorageMode()
+    storage: getStorageMode(),
+    notifications: getNotificationHealth()
   });
 }

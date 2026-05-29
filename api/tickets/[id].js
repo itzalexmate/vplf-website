@@ -1,6 +1,9 @@
 import { getBaseUrl, requireStaff } from "../../lib/auth.js";
 import { methodNotAllowed, readJson, sendJson } from "../../lib/http.js";
-import { deleteTicket, updateTicketStatus } from "../../lib/storage.js";
+import { getTicketById, updateTicketBatch, updateTicketStatus } from "../../lib/storage.js";
+import { notifyTicketDecision } from "../../lib/notifications.js";
+
+const DECISION_STATUSES = ["approved", "denied", "rejected"];
 
 export default async function handler(req, res) {
   try {
@@ -9,26 +12,56 @@ export default async function handler(req, res) {
 
     if (req.method === "PATCH") {
       const body = await readJson(req);
-      const ticket = await updateTicketStatus(ticketId, String(body.status || ""), user);
+      let ticket = await getTicketById(ticketId);
 
       if (!ticket) {
         sendJson(res, 404, { error: "Ticket not found" });
         return;
       }
 
-      sendJson(res, 200, { ticket });
-      return;
-    }
+      const previousStatus = ticket.status;
+      const statusRequested = Object.hasOwn(body, "status");
+      const batchRequested = Object.hasOwn(body, "batchCode") || Object.hasOwn(body, "batchMode");
+      const notifications = [];
 
-    if (req.method === "DELETE") {
-      const deleted = await deleteTicket(ticketId);
+      if (statusRequested) {
+        ticket = await updateTicketStatus(ticketId, String(body.status || ""), user, {
+          decisionReason: body.decisionReason
+        });
+      }
 
-      if (!deleted) {
+      if (batchRequested) {
+        ticket = await updateTicketBatch(ticketId, {
+          batchCode: body.batchCode,
+          batchMode: body.batchMode
+        }, user);
+      }
+
+      if (!ticket) {
         sendJson(res, 404, { error: "Ticket not found" });
         return;
       }
 
-      sendJson(res, 200, { ok: true });
+      if (statusRequested && ticket.status !== previousStatus && DECISION_STATUSES.includes(ticket.status)) {
+        notifications.push(...await notifyTicketDecision(ticket, ticket.status, user));
+      }
+
+      sendJson(res, 200, { ticket, notifications });
+      return;
+    }
+
+    if (req.method === "DELETE") {
+      const ticket = await updateTicketStatus(ticketId, "denied", user, {
+        decisionReason: "Denied from legacy delete action"
+      });
+
+      if (!ticket) {
+        sendJson(res, 404, { error: "Ticket not found" });
+        return;
+      }
+
+      const notifications = await notifyTicketDecision(ticket, "denied", user);
+      sendJson(res, 200, { ok: true, ticket, notifications });
       return;
     }
 

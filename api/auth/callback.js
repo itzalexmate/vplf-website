@@ -5,7 +5,7 @@ import {
   getExpectedState,
   getRedirectUri
 } from "../../lib/auth.js";
-import { redirect } from "../../lib/http.js";
+import { redirect, sendHtml } from "../../lib/http.js";
 
 const DISCORD_API = "https://discord.com/api";
 
@@ -23,7 +23,7 @@ export default async function handler(req, res) {
   const expectedState = getExpectedState(req);
 
   if (!code || !state || !expectedState || state !== expectedState) {
-    redirect(res, "/?auth=error&reason=state", 302, [clearStateCookie(req)]);
+    sendHtml(res, 400, "Discord Login Expired", "The OAuth session expired or the state cookie was blocked. Start the Discord login again.", "/api/auth/discord", "Try Login Again");
     return;
   }
 
@@ -35,9 +35,8 @@ export default async function handler(req, res) {
       createSessionCookie(req, discordUser)
     ]);
   } catch (error) {
-    redirect(res, `/?auth=error&reason=${encodeURIComponent(error.message)}`, 302, [
-      clearStateCookie(req)
-    ]);
+    res.setHeader("Set-Cookie", clearStateCookie(req));
+    sendHtml(res, 502, "Discord Login Failed", error.message || "Discord did not complete the login request.", "/", "Return Home");
   }
 }
 
@@ -57,7 +56,8 @@ async function exchangeCode(req, code) {
       grant_type: "authorization_code",
       code,
       redirect_uri: getRedirectUri(req)
-    })
+    }),
+    signal: AbortSignal.timeout(10000)
   });
 
   if (!response.ok) {
@@ -71,7 +71,8 @@ async function getDiscordUser(accessToken) {
   const response = await fetch(`${DISCORD_API}/users/@me`, {
     headers: {
       Authorization: `Bearer ${accessToken}`
-    }
+    },
+    signal: AbortSignal.timeout(10000)
   });
 
   if (!response.ok) {

@@ -5,10 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vercel dev --listen 3000",
-    "check": "node --check script.js && node --check lib/env.js && node --check lib/auth.js && node --check lib/http.js && node --check lib/storage.js && node --check api/health.js && node --check api/me.js && node --check api/auth/discord.js && node --check api/auth/callback.js && node --check api/auth/logout.js && node --check api/tickets/index.js && node --check api/tickets/[id].js && node --check api/my-tickets.js"
+    "check": "node --check script.js && node --check lib/env.js && node --check lib/auth.js && node --check lib/http.js && node --check lib/storage.js && node --check lib/notifications.js && node --check api/health.js && node --check api/me.js && node --check api/auth/discord.js && node --check api/auth/callback.js && node --check api/auth/logout.js && node --check api/tickets/index.js && node --check api/tickets/[id].js && node --check api/my-tickets.js"
   },
   "dependencies": {
-    "@vercel/postgres": "^0.10.0"
+    "@vercel/postgres": "^0.10.0",
+    "nodemailer": "^6.9.16"
   },
   "devDependencies": {
     "vercel": "^46.0.0"

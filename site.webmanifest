@@ -1,14 +1,14 @@
 {
-  "name": "VPLF Ticket System",
-  "short_name": "VPLF Tickets",
+  "name": "VCFL Item Request Hub",
+  "short_name": "VCFL Items",
   "icons": [
     {
-      "src": "/assets/vplf-logo.svg",
-      "sizes": "any",
-      "type": "image/svg+xml"
+      "src": "/assets/vcfl-logo.webp",
+      "sizes": "499x499",
+      "type": "image/webp"
     }
   ],
-  "theme_color": "#050814",
-  "background_color": "#050814",
+  "theme_color": "#160924",
+  "background_color": "#0b0612",
   "display": "standalone"
 }

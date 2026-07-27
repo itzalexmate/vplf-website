@@ -16,6 +16,10 @@ const formMeter = document.querySelector("#formMeter");
 const ticketAuthGate = document.querySelector("#ticketAuthGate");
 const mineAuthGate = document.querySelector("#mineAuthGate");
 const myTicketsList = document.querySelector("#myTicketsList");
+const lockerList = document.querySelector("#lockerList");
+const playerPendingCount = document.querySelector("#playerPendingCount");
+const playerAcceptedCount = document.querySelector("#playerAcceptedCount");
+const playerLockerCount = document.querySelector("#playerLockerCount");
 const refreshMine = document.querySelector("#refreshMine");
 const staffDenied = document.querySelector("#staffDenied");
 const ticketsList = document.querySelector("#ticketsList");
@@ -24,6 +28,7 @@ const pendingCount = document.querySelector("#pendingCount");
 const approvedCount = document.querySelector("#approvedCount");
 const deniedCount = document.querySelector("#deniedCount");
 const rejectedCount = document.querySelector("#rejectedCount");
+const sentCount = document.querySelector("#sentCount");
 const batchCount = document.querySelector("#batchCount");
 const ticketSearch = document.querySelector("#ticketSearch");
 const statusButtons = document.querySelectorAll("[data-status-filter]");
@@ -52,16 +57,18 @@ const state = {
 
 const STATUS_LABELS = {
   pending: "Pending",
-  approved: "Approved",
+  approved: "Accepted",
   denied: "Denied",
-  rejected: "Rejected"
+  rejected: "Rejected",
+  sent: "Sent to Locker"
 };
 
 const STATUS_ORDER = {
   pending: 0,
   approved: 1,
-  denied: 2,
-  rejected: 3
+  sent: 2,
+  denied: 3,
+  rejected: 4
 };
 
 async function apiRequest(path, options = {}) {
@@ -166,7 +173,7 @@ function updateSessionUI() {
     return;
   }
 
-  profileAvatar.src = state.user.avatarUrl || "/assets/vplf-logo.svg";
+  profileAvatar.src = state.user.avatarUrl || "/assets/vcfl-logo.webp";
   profileName.textContent = discordName(state.user);
 
   if (!usernameInput.value) {
@@ -244,6 +251,7 @@ function updateStats() {
   approvedCount.textContent = state.tickets.filter((ticket) => ticket.status === "approved").length;
   deniedCount.textContent = state.tickets.filter((ticket) => ticket.status === "denied").length;
   rejectedCount.textContent = state.tickets.filter((ticket) => ticket.status === "rejected").length;
+  sentCount.textContent = state.tickets.filter((ticket) => ticket.status === "sent").length;
   batchCount.textContent = getBatchSummaries().length;
   syncBatchFilter();
 }
@@ -301,6 +309,7 @@ function createTicketCard(ticket, mode) {
   const approveButton = fragment.querySelector("[data-approve-ticket]");
   const denyButton = fragment.querySelector("[data-deny-ticket]");
   const rejectButton = fragment.querySelector("[data-reject-ticket]");
+  const sentButton = fragment.querySelector("[data-sent-ticket]");
   const batchButton = fragment.querySelector("[data-batch-ticket]");
   const autoBatchButton = fragment.querySelector("[data-auto-batch-ticket]");
   const copyButton = fragment.querySelector("[data-copy-ticket]");
@@ -315,7 +324,9 @@ function createTicketCard(ticket, mode) {
   fragment.querySelector("[data-ticket-info]").textContent = ticket.additionalInfo || "No extra details";
   fragment.querySelector("[data-ticket-date]").textContent = formatDate(ticket.createdAt);
   fragment.querySelector("[data-ticket-review]").textContent = getReviewLabel(ticket);
+  fragment.querySelector("[data-ticket-sent]").textContent = getSentLabel(ticket);
   fragment.querySelector("[data-ticket-reason]").textContent = ticket.decisionReason || "No decision reason";
+  updateProgress(fragment.querySelector("[data-ticket-progress]"), ticket.status);
 
   const messageLink = fragment.querySelector("[data-ticket-message]");
   messageLink.href = ticket.messageLink;
@@ -331,16 +342,19 @@ function createTicketCard(ticket, mode) {
   if (mode !== "staff") {
     actions.replaceChildren(copyButton);
   } else {
-    approveButton.disabled = ticket.status === "approved";
-    denyButton.disabled = ticket.status === "denied";
-    rejectButton.disabled = ticket.status === "rejected";
+    approveButton.disabled = ticket.status === "approved" || ticket.status === "sent";
+    denyButton.disabled = ticket.status === "denied" || ticket.status === "sent";
+    rejectButton.disabled = ticket.status === "rejected" || ticket.status === "sent";
+    sentButton.disabled = ticket.status !== "approved";
     autoBatchButton.disabled = ticket.batchMode === "auto";
-    approveButton.textContent = ticket.status === "approved" ? "Approved" : "Approve";
+    approveButton.textContent = ["approved", "sent"].includes(ticket.status) ? "Accepted" : "Accept";
     denyButton.textContent = ticket.status === "denied" ? "Denied" : "Deny";
     rejectButton.textContent = ticket.status === "rejected" ? "Rejected" : "Reject";
+    sentButton.textContent = ticket.status === "sent" ? "Sent" : "Mark Sent";
     approveButton.addEventListener("click", () => decideTicket(ticket.id, "approved"));
     denyButton.addEventListener("click", () => decideTicket(ticket.id, "denied"));
     rejectButton.addEventListener("click", () => decideTicket(ticket.id, "rejected"));
+    sentButton.addEventListener("click", () => decideTicket(ticket.id, "sent"));
     batchButton.addEventListener("click", () => moveTicketToManualBatch(ticket.id));
     autoBatchButton.addEventListener("click", () => moveTicketToAutoBatch(ticket.id));
   }
@@ -351,17 +365,27 @@ function createTicketCard(ticket, mode) {
 
 function renderMyTickets() {
   myTicketsList.replaceChildren();
+  lockerList.replaceChildren();
+  updatePlayerStats();
 
   if (!state.user) {
     return;
   }
 
   if (!state.myTickets.length) {
-    myTicketsList.append(emptyState("No submitted tickets yet."));
+    myTicketsList.append(emptyState("No item requests yet."));
+    lockerList.append(emptyState("Sent items will appear here."));
     return;
   }
 
   state.myTickets.forEach((ticket) => myTicketsList.append(createTicketCard(ticket, "mine")));
+  const delivered = state.myTickets.filter((ticket) => ticket.status === "sent");
+  if (!delivered.length) {
+    lockerList.append(emptyState("No delivered items yet."));
+    return;
+  }
+
+  delivered.forEach((ticket) => lockerList.append(createLockerItem(ticket)));
 }
 
 function renderStaffTickets() {
@@ -415,7 +439,7 @@ async function loadStaffTickets() {
 }
 
 async function decideTicket(ticketId, status) {
-  const reason = status === "approved"
+  const reason = ["approved", "sent"].includes(status)
     ? ""
     : window.prompt(`Optional reason for ${STATUS_LABELS[status].toLowerCase()} ticket:`) || "";
 
@@ -511,6 +535,8 @@ function exportCsv() {
     "decisionReason",
     "reviewedAt",
     "reviewedByUsername",
+    "sentAt",
+    "sentByUsername",
     "createdAt"
   ];
   const escape = (value) => `"${String(value || "").replaceAll("\"", "\"\"")}"`;
@@ -522,7 +548,7 @@ function exportCsv() {
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = `vplf-tickets-${new Date().toISOString().slice(0, 10)}.csv`;
+  link.download = `vcfl-item-requests-${new Date().toISOString().slice(0, 10)}.csv`;
   link.click();
   URL.revokeObjectURL(url);
 }
@@ -699,6 +725,72 @@ function getReviewLabel(ticket) {
     return "Not reviewed yet";
   }
 
-  const reviewer = ticket.reviewedByUsername || "VPLF Staff";
+  const reviewer = ticket.reviewedByUsername || "VCFL Staff";
   return `${formatDate(ticket.reviewedAt)} by ${reviewer}`;
+}
+
+function getSentLabel(ticket) {
+  if (!ticket.sentAt) {
+    return "Not sent yet";
+  }
+
+  const sender = ticket.sentByUsername || "VCFL Staff";
+  return `${formatDate(ticket.sentAt)} by ${sender}`;
+}
+
+function updatePlayerStats() {
+  playerPendingCount.textContent = state.myTickets.filter((ticket) => ticket.status === "pending").length;
+  playerAcceptedCount.textContent = state.myTickets.filter((ticket) => ticket.status === "approved").length;
+  playerLockerCount.textContent = state.myTickets.filter((ticket) => ticket.status === "sent").length;
+}
+
+function updateProgress(progress, status) {
+  if (!progress) {
+    return;
+  }
+
+  const request = progress.querySelector('[data-progress-step="request"]');
+  const decision = progress.querySelector('[data-progress-step="decision"]');
+  const locker = progress.querySelector('[data-progress-step="locker"]');
+  request.classList.add("complete");
+
+  if (["approved", "sent"].includes(status)) {
+    decision.classList.add("complete");
+  } else if (["denied", "rejected"].includes(status)) {
+    decision.classList.add("failed");
+    decision.querySelector("span").textContent = STATUS_LABELS[status];
+  } else {
+    decision.classList.add("current");
+  }
+
+  if (status === "sent") {
+    locker.classList.add("complete");
+  } else if (["denied", "rejected"].includes(status)) {
+    locker.classList.add("blocked");
+  } else {
+    locker.classList.add(status === "approved" ? "current" : "waiting");
+  }
+}
+
+function createLockerItem(ticket) {
+  const item = document.createElement("article");
+  item.className = "locker-item";
+
+  const mark = document.createElement("span");
+  mark.className = "locker-item-mark";
+  mark.setAttribute("aria-hidden", "true");
+  mark.textContent = "✓";
+
+  const copy = document.createElement("div");
+  const label = document.createElement("span");
+  label.className = "locker-item-label";
+  label.textContent = "Delivered";
+  const title = document.createElement("h4");
+  title.textContent = ticket.itemWon;
+  const meta = document.createElement("p");
+  meta.textContent = `${ticket.ticketCode} · ${ticket.sentAt ? formatDate(ticket.sentAt) : "Sent"}`;
+
+  copy.append(label, title, meta);
+  item.append(mark, copy);
+  return item;
 }

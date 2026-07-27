@@ -3,10 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#050814">
-  <meta name="description" content="VPLF Discord OAuth ticket system for reward claims.">
-  <title>VPLF Ticket System</title>
-  <link rel="icon" href="/assets/vplf-logo.svg" type="image/svg+xml">
+  <meta name="theme-color" content="#160924">
+  <meta name="description" content="VCFL item request portal with Discord updates and a player locker.">
+  <meta property="og:title" content="VCFL Item Request Hub">
+  <meta property="og:description" content="Request league items, follow every decision, and see delivered items in your locker.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="/assets/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="VCFL Item Request Hub">
+  <meta name="twitter:description" content="Request league items, follow every decision, and see delivered items in your locker.">
+  <meta name="twitter:image" content="/assets/og.png">
+  <title>VCFL Item Request Hub</title>
+  <link rel="icon" href="/assets/vcfl-logo.webp" type="image/webp">
   <link rel="manifest" href="/site.webmanifest">
   <link rel="stylesheet" href="/styles.css">
 </head>
@@ -21,19 +29,19 @@
 
   <div class="page-shell">
     <header class="site-header">
-      <a class="brand" href="#" aria-label="VPLF Ticket System home" data-view-link="home">
-        <img src="/assets/vplf-logo.svg" alt="VPLF Logo" class="brand-logo">
+      <a class="brand" href="#" aria-label="VCFL Item Request Hub home" data-view-link="home">
+        <img src="/assets/vcfl-logo.webp" alt="VCFL crest" class="brand-logo">
         <span class="brand-copy">
-          <strong>VPLF</strong>
-          <span>Ticket System</span>
+          <strong>VCFL</strong>
+          <span>Item Request Hub</span>
         </span>
       </a>
 
       <nav class="desktop-nav" aria-label="Primary navigation">
         <button class="nav-link active" type="button" data-view-link="home">Home</button>
-        <button class="nav-link" type="button" data-view-link="ticket">New Claim</button>
-        <button class="nav-link" type="button" data-view-link="mine">My Tickets</button>
-        <button class="nav-link staff-only" type="button" data-view-link="staff" hidden>League Console</button>
+        <button class="nav-link" type="button" data-view-link="ticket">Request Item</button>
+        <button class="nav-link" type="button" data-view-link="mine">Dashboard &amp; Locker</button>
+        <button class="nav-link staff-only" type="button" data-view-link="staff" hidden>Staff Console</button>
       </nav>
 
       <div class="header-actions">
@@ -45,12 +53,12 @@
 
         <div class="profile-menu" id="profileMenu" hidden>
           <button class="profile-trigger" id="profileTrigger" type="button" aria-expanded="false" aria-controls="profileDropdown">
-            <img id="profileAvatar" src="/assets/vplf-logo.svg" alt="">
+            <img id="profileAvatar" src="/assets/vcfl-logo.webp" alt="">
             <span id="profileName">User</span>
           </button>
           <div class="profile-dropdown" id="profileDropdown" hidden>
-            <button type="button" data-view-link="mine">My Tickets</button>
-            <button class="staff-only" type="button" data-view-link="staff" hidden>League Console</button>
+            <button type="button" data-view-link="mine">Dashboard &amp; Locker</button>
+            <button class="staff-only" type="button" data-view-link="staff" hidden>Staff Console</button>
             <button type="button" id="logoutButton">Logout</button>
           </div>
         </div>
@@ -62,17 +70,17 @@
         <div class="home-layout">
           <div class="hero-copy">
             <div class="hero-logo-wrap">
-              <img src="/assets/vplf-logo.svg" alt="" class="hero-logo">
+              <img src="/assets/vcfl-logo.webp" alt="" class="hero-logo">
             </div>
-            <p class="eyebrow">Discord Secured Claim Portal</p>
-            <h1 id="home-title">VPLF Claim Hub</h1>
-            <p class="hero-subtitle">A polished reward desk for VPLF players: sign in with Discord, send your item claim, and choose optional email or Discord DM updates.</p>
+            <p class="eyebrow">Official VCFL Item Desk</p>
+            <h1 id="home-title">Your items, tracked.</h1>
+            <p class="hero-subtitle">Request a VPLF item, follow the staff decision, and see it land in your personal locker once it has been sent.</p>
             <div class="hero-actions">
               <a class="primary-action" href="/api/auth/discord" data-auth-action>
                 <span class="discord-mark" aria-hidden="true"></span>
                 Continue With Discord
               </a>
-              <button class="secondary-action" type="button" data-view-link="ticket">Start Claim</button>
+              <button class="secondary-action" type="button" data-view-link="ticket">Request an Item</button>
             </div>
           </div>
 
@@ -80,23 +88,23 @@
             <div class="card-scanline"></div>
             <div class="command-topline">
               <span class="live-dot"></span>
-              <strong>Claim Pipeline</strong>
+              <strong>Request Journey</strong>
             </div>
             <div class="pipeline">
               <div class="pipeline-step active">
                 <span>01</span>
-                <strong>Discord OAuth</strong>
-                <small>Identity is verified before claim creation.</small>
+                <strong>Send a Request</strong>
+                <small>Sign in with Discord and choose the item you earned.</small>
               </div>
               <div class="pipeline-step">
                 <span>02</span>
-                <strong>Ticket Review</strong>
-                <small>Staff IDs unlock the league console.</small>
+                <strong>Get the Decision</strong>
+                <small>The VCFL bot can DM you when staff accept or reject it.</small>
               </div>
               <div class="pipeline-step">
                 <span>03</span>
-                <strong>Optional Notices</strong>
-                <small>Email and Discord DMs only send when players opt in.</small>
+                <strong>Locker Delivery</strong>
+                <small>When staff mark it sent, your dashboard and locker update.</small>
               </div>
             </div>
           </aside>
@@ -105,18 +113,18 @@
         <div class="feature-grid" aria-label="Portal features">
           <article class="feature-tile">
             <span class="tile-icon shield-icon" aria-hidden="true"></span>
-            <h2>OAuth Locked</h2>
-            <p>No shared staff password. Access comes from approved Discord user IDs.</p>
+            <h2>Discord Secured</h2>
+            <p>Every request belongs to the Discord account that submitted it.</p>
           </article>
           <article class="feature-tile">
             <span class="tile-icon ticket-icon" aria-hidden="true"></span>
-            <h2>Tracked Claims</h2>
-            <p>Every ticket stores a VPLF code, player info, links, item, and timestamp.</p>
+            <h2>Live Status</h2>
+            <p>Track Pending, Accepted, Rejected, and Sent without chasing staff.</p>
           </article>
           <article class="feature-tile">
             <span class="tile-icon pulse-icon" aria-hidden="true"></span>
-            <h2>Notification Ready</h2>
-            <p>Gmail SMTP and bot DMs can announce claim decisions without spammy bulk messaging.</p>
+            <h2>Locker Ready</h2>
+            <p>Delivered items appear in one clean player locker with their ticket history.</p>
           </article>
         </div>
       </section>
@@ -124,14 +132,14 @@
       <section class="view" data-view="ticket" aria-labelledby="create-title">
         <form class="glass-card ticket-card" id="ticketForm">
           <div class="card-scanline" aria-hidden="true"></div>
-          <img src="/assets/vplf-logo.svg" alt="" class="card-logo">
-          <p class="eyebrow">VPLF Claim Desk</p>
-          <h2 id="create-title">Create a Ticket</h2>
-          <p class="subtitle">Submit your reward claim for league staff review.</p>
+          <img src="/assets/vcfl-logo.webp" alt="" class="card-logo">
+          <p class="eyebrow">VCFL Item Desk</p>
+          <h2 id="create-title">Request an Item</h2>
+          <p class="subtitle">Send your item request for staff review.</p>
 
           <div class="auth-gate" id="ticketAuthGate" hidden>
             <strong>Discord login required</strong>
-            <span>Connect your Discord account before sending a claim.</span>
+            <span>Connect your Discord account before sending a request.</span>
             <a class="primary-action compact" href="/api/auth/discord">Login With Discord</a>
           </div>
 
@@ -151,7 +159,7 @@
             </label>
 
             <label class="field-group">
-              <span class="field-label"><span class="field-icon boots-icon" aria-hidden="true"></span> ITEM WON</span>
+              <span class="field-label"><span class="field-icon boots-icon" aria-hidden="true"></span> ITEM REQUESTED</span>
               <select id="itemWon" name="itemWon" required>
                 <option value="" selected disabled>Choose an item</option>
                 <option>VPLF Boots Blue (Old)</option>
@@ -187,7 +195,7 @@
           <div class="notification-panel" aria-label="Optional notifications">
             <div class="notification-heading">
               <strong>Optional Updates</strong>
-              <span>Choose how you want to hear back when staff approve, deny, or reject this claim.</span>
+              <span>Choose how to hear back when your request is accepted, rejected, or sent.</span>
             </div>
 
             <label class="toggle-row">
@@ -195,7 +203,7 @@
               <span class="toggle-control" aria-hidden="true"></span>
               <span>
                 <strong>Email me</strong>
-                <small>Send the decision to the email address below.</small>
+                <small>Send request updates to the email address below.</small>
               </span>
             </label>
 
@@ -205,38 +213,67 @@
             </label>
 
             <label class="toggle-row">
-              <input id="notifyDiscord" name="notifyDiscord" type="checkbox">
+              <input id="notifyDiscord" name="notifyDiscord" type="checkbox" checked>
               <span class="toggle-control" aria-hidden="true"></span>
               <span>
-                <strong>Discord DM me</strong>
-                <small>Uses the official bot API. DMs may fail if your privacy settings block the bot.</small>
+                <strong>Discord bot updates</strong>
+                <small>On by default. DMs may fail if your privacy settings block the bot.</small>
               </span>
             </label>
           </div>
 
           <button class="submit-button" type="submit" id="submitButton">
-            <span>Submit Claim</span>
+            <span>Submit Request</span>
           </button>
           <p class="form-message" id="formMessage" role="status" aria-live="polite"></p>
         </form>
       </section>
 
       <section class="view" data-view="mine" aria-labelledby="mine-title">
-        <div class="glass-card list-card">
+        <div class="glass-card list-card dashboard-card">
           <div class="card-scanline" aria-hidden="true"></div>
           <div class="section-heading">
             <div>
-              <p class="eyebrow left">Player View</p>
-              <h2 id="mine-title">My Tickets</h2>
+              <p class="eyebrow left">Player Dashboard</p>
+              <h2 id="mine-title">Requests &amp; Locker</h2>
             </div>
             <button class="ghost-button" type="button" id="refreshMine">Refresh</button>
           </div>
           <div class="auth-gate" id="mineAuthGate" hidden>
-            <strong>Login to view your claims</strong>
-            <span>Your tickets are tied to your Discord account.</span>
+            <strong>Login to view your dashboard</strong>
+            <span>Your requests and locker are tied to your Discord account.</span>
             <a class="primary-action compact" href="/api/auth/discord">Login With Discord</a>
           </div>
-          <div class="tickets-list" id="myTicketsList"></div>
+          <div class="player-stats" aria-label="Your request summary">
+            <article class="player-stat">
+              <span>In Review</span>
+              <strong id="playerPendingCount">0</strong>
+            </article>
+            <article class="player-stat">
+              <span>Accepted</span>
+              <strong id="playerAcceptedCount">0</strong>
+            </article>
+            <article class="player-stat">
+              <span>In Locker</span>
+              <strong id="playerLockerCount">0</strong>
+            </article>
+          </div>
+          <div class="player-dashboard-grid">
+            <section class="dashboard-panel" aria-labelledby="requests-heading">
+              <div class="panel-heading">
+                <span>Request history</span>
+                <h3 id="requests-heading">My Requests</h3>
+              </div>
+              <div class="tickets-list" id="myTicketsList"></div>
+            </section>
+            <section class="dashboard-panel locker-panel" aria-labelledby="locker-heading">
+              <div class="panel-heading">
+                <span>Delivered items</span>
+                <h3 id="locker-heading">My Locker</h3>
+              </div>
+              <div class="locker-list" id="lockerList"></div>
+            </section>
+          </div>
         </div>
       </section>
 
@@ -246,7 +283,7 @@
           <div class="section-heading">
             <div>
               <p class="eyebrow left">Discord Staff Console</p>
-              <h2 id="staff-title">League Console</h2>
+              <h2 id="staff-title">Staff Console</h2>
             </div>
             <button class="ghost-button" type="button" id="refreshTickets">Refresh</button>
           </div>
@@ -262,7 +299,7 @@
               <strong id="pendingCount">0</strong>
             </article>
             <article class="stat-card">
-              <span>Approved</span>
+              <span>Accepted</span>
               <strong id="approvedCount">0</strong>
             </article>
             <article class="stat-card">
@@ -272,6 +309,10 @@
             <article class="stat-card">
               <span>Rejected</span>
               <strong id="rejectedCount">0</strong>
+            </article>
+            <article class="stat-card">
+              <span>Sent</span>
+              <strong id="sentCount">0</strong>
             </article>
             <article class="stat-card">
               <span>Batches</span>
@@ -291,9 +332,10 @@
             <div class="segmented-control" role="group" aria-label="Ticket status filter">
               <button class="active" type="button" data-status-filter="all">All</button>
               <button type="button" data-status-filter="pending">Pending</button>
-              <button type="button" data-status-filter="approved">Approved</button>
+              <button type="button" data-status-filter="approved">Accepted</button>
               <button type="button" data-status-filter="denied">Denied</button>
               <button type="button" data-status-filter="rejected">Rejected</button>
+              <button type="button" data-status-filter="sent">Sent</button>
             </div>
             <label class="select-box">
               <span class="sr-only">Batch filter</span>
@@ -320,7 +362,7 @@
     </main>
 
     <footer class="site-footer">
-      <span>Virtual Premier League Football</span>
+      <span>VCFL Item Request Hub</span>
     </footer>
   </div>
 
@@ -334,6 +376,11 @@
           </div>
           <span class="status-pill" data-ticket-status></span>
         </div>
+        <ol class="status-track" data-ticket-progress aria-label="Request progress">
+          <li data-progress-step="request"><span>Requested</span></li>
+          <li data-progress-step="decision"><span>Decision</span></li>
+          <li data-progress-step="locker"><span>Locker</span></li>
+        </ol>
         <dl class="ticket-details">
           <div>
             <dt>Discord</dt>
@@ -376,6 +423,10 @@
             <dd data-ticket-review></dd>
           </div>
           <div>
+            <dt>Sent</dt>
+            <dd data-ticket-sent></dd>
+          </div>
+          <div>
             <dt>Reason</dt>
             <dd data-ticket-reason></dd>
           </div>
@@ -383,9 +434,10 @@
       </div>
       <div class="ticket-actions" data-ticket-actions>
         <button class="copy-button" type="button" data-copy-ticket>Copy Code</button>
-        <button class="approve-button" type="button" data-approve-ticket>Approve</button>
+        <button class="approve-button" type="button" data-approve-ticket>Accept</button>
         <button class="deny-button" type="button" data-deny-ticket>Deny</button>
         <button class="reject-button" type="button" data-reject-ticket>Reject</button>
+        <button class="sent-button" type="button" data-sent-ticket>Mark Sent</button>
         <button class="batch-button" type="button" data-batch-ticket>Manual Batch</button>
         <button class="auto-batch-button" type="button" data-auto-batch-ticket>Auto Batch</button>
       </div>

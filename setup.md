@@ -1,4 +1,4 @@
-# VPLF Ticket System Setup
+# VCFL Item Request Hub Setup
 
 This version is built for Vercel. It uses:
 
@@ -7,7 +7,7 @@ This version is built for Vercel. It uses:
 - Discord OAuth2 login.
 - Staff access by Discord user ID.
 - Postgres storage through Vercel Marketplace storage.
-- Stored review history for approved, denied, and rejected tickets.
+- Stored history for accepted, rejected, and sent item requests.
 - Automatic daily batches plus staff-assigned manual batches.
 
 ## 1. Install
@@ -19,7 +19,7 @@ npm install
 ## 2. Create A Discord Application
 
 1. Go to the Discord Developer Portal.
-2. Create an application for `VPLF Ticket System`.
+2. Create an application for `VCFL Item Request Hub`.
 3. Open `OAuth2`.
 4. Copy the `Client ID`.
 5. Reset/copy the `Client Secret`.
@@ -129,7 +129,7 @@ SMTP_PORT=465
 SMTP_SECURE=true
 SMTP_USER=your_gmail_system_account@gmail.com
 SMTP_PASS=your_16_character_google_app_password
-SMTP_FROM=VPLF Ticket System <your_gmail_system_account@gmail.com>
+SMTP_FROM=VCFL Item Request Hub <your_gmail_system_account@gmail.com>
 DISCORD_BOT_TOKEN=your_discord_bot_token_for_optional_dms
 ```
 
@@ -177,7 +177,7 @@ Check these first:
 
 ## 11. Optional Notifications
 
-Players must explicitly opt in on each claim before any notice is sent.
+Players control notification preferences on each item request before any notice is sent.
 
 Email notices:
 

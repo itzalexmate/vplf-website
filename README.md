@@ -1,5 +1,5 @@
-# VPLF Ticket System
+# VCFL Item Request Hub
 
-Discord OAuth ticket system for VPLF, built for Vercel.
+Discord-secured item requests, decision notifications, delivery tracking, and a player locker for VCFL.
 
 Read [setup.md](setup.md) for the full deployment guide.

@@ -3,7 +3,7 @@ import { methodNotAllowed, readJson, sendJson } from "../../lib/http.js";
 import { getTicketById, updateTicketBatch, updateTicketStatus } from "../../lib/storage.js";
 import { notifyTicketDecision } from "../../lib/notifications.js";
 
-const DECISION_STATUSES = ["approved", "denied", "rejected"];
+const NOTIFICATION_STATUSES = ["approved", "denied", "rejected", "sent"];
 
 export default async function handler(req, res) {
   try {
@@ -42,7 +42,7 @@ export default async function handler(req, res) {
         return;
       }
 
-      if (statusRequested && ticket.status !== previousStatus && DECISION_STATUSES.includes(ticket.status)) {
+      if (statusRequested && ticket.status !== previousStatus && NOTIFICATION_STATUSES.includes(ticket.status)) {
         notifications.push(...await notifyTicketDecision(ticket, ticket.status, user));
       }
 
